@@ -1,0 +1,3 @@
+- src: https://gitlab.com/ansilbe-roles1/docker
+  name: docker
+  version: master
