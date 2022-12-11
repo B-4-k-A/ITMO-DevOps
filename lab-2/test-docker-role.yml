@@ -1,0 +1,7 @@
+---
+- hosts: web
+  gather_facts: no
+  become: yes
+  
+  roles:
+    - docker 
