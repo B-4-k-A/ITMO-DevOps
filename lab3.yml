@@ -1,18 +1,34 @@
 ---
-- hosts: app
-  become: yes
+- hosts: web
   gather_facts: no
-  become_method: sudo
+  become: yes
+  roles:
+    - nginx
+- hosts: app
+  gather_facts: no
+  become: yes
+  roles:
+    - docker
   vars:
-    lab_path: "/home/beka/Study/DevOps/lab-1"
+    lab_path: "/home/beka/Study/DevOps"
     app_path: "/home/vagrant/DevOps/lab-1"
   tasks:
+    - name: Delete app directory
+      file:
+        path: "{{ app_path }}"
+        state: absent
+
     - name: Cloning repository
       git:
         repo: https://github.com/mdn/django-locallibrary-tutorial.git
         dest: "{{ app_path }}"
         clone: yes
         update: yes
+
+    - name: Change settings file
+      copy:
+        src: "{{ lab_path }}/source/settings.py"
+        dest: "{{ app_path}}/locallibrary/"
 
     - name: Installing requirements from requirements.txt
       pip: 
@@ -31,9 +47,10 @@
     - name: Run the standard tests
       command: "python3 {{ app_path }}/manage.py test"
 
-#    - name: Create a superuser for app
-#      command: "python3 {{ app_path }}/manage.py createsuperuser --username vagrant --email vagrant@mail.ru --noinput"
-#
+    - name: Create a superuser for app
+      #command: "python3 {{ app_path }}/manage.py createsuperuser --username vagrant --email vagrant@mail.ru --noinput"
+      command: "echo \"from django.contrib.auth.models import User; User.objects.create_superuser('vagrant', 'vagrant@example.com', 'vagrant')\" | python manage.py shell"
+
     - name: Copy Dockerfile
       copy: 
         src: "{{ lab_path }}/source/Dockerfile"
@@ -41,7 +58,7 @@
         remote_src: no
 
     - name: Stop instance
-      shell: "sudo docker kill $(sudo docker ps -q) && sudo docker rm -f $(sudo docker ps -a -q)"
+      shell: "sudo docker rm -f django_app"
       ignore_errors: yes
 
 
@@ -49,7 +66,7 @@
       docker_image:
         build:
           path: "{{ app_path }}"
-        name: devops-1
+        name: django_app
         state: present
         source: build
 
@@ -63,4 +80,4 @@
 #        state: started
 
     - name: Start docker container
-      shell: "sudo docker run -d -p 80:80 --name devops-1 devops-1:latest"
+      shell: "sudo docker run -d -p 8080:80 --name django_app django_app:latest"

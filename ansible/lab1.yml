@@ -53,6 +53,11 @@
     lab_path: "/home/beka/Study/DevOps/lab-1"
     app_path: "/home/vagrant/DevOps/lab-1"
   tasks:
+    - name: Delete app directory
+      file:
+        path: "{{ app_path }}"
+        state: absent
+
     - name: Cloning repository
       git:
         repo: https://github.com/mdn/django-locallibrary-tutorial.git
