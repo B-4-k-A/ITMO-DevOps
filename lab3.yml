@@ -4,14 +4,33 @@
   become: yes
   roles:
     - nginx
+  vars:
+    project_path: "/home/beka/Study/DevOps"
+    inventories: "{{ project_path }}/inventories"
+  tasks:
+    - name: Create directory for static files for nginx server if it does not exists
+      file:
+        path: "{{ nginx_root_default }}/{{ nginx_static_files_url }}"
+        state: directory
+
+    - name: Copy static html document
+      copy:
+        src: "{{ inventories }}/files/index.html"
+        dest: "{{ nginx_root_default }}/{{ nginx_static_files_url }}"
+
 - hosts: app
   gather_facts: no
   become: yes
   roles:
     - docker
+
   vars:
-    lab_path: "/home/beka/Study/DevOps"
+    project_path: "/home/beka/Study/DevOps"
+    inventories: "{{ project_path }}/inventories"
     app_path: "/home/vagrant/DevOps/lab-1"
+    docker_image_name: "django_app"
+    docker_container_name: "django_app"
+    docker_container_working_port: "8080"
   tasks:
     - name: Delete app directory
       file:
@@ -27,7 +46,7 @@
 
     - name: Change settings file
       copy:
-        src: "{{ lab_path }}/source/settings.py"
+        src: "{{ inventories }}/files/settings.py"
         dest: "{{ app_path}}/locallibrary/"
 
     - name: Installing requirements from requirements.txt
@@ -47,18 +66,14 @@
     - name: Run the standard tests
       command: "python3 {{ app_path }}/manage.py test"
 
-    - name: Create a superuser for app
-      #command: "python3 {{ app_path }}/manage.py createsuperuser --username vagrant --email vagrant@mail.ru --noinput"
-      command: "echo \"from django.contrib.auth.models import User; User.objects.create_superuser('vagrant', 'vagrant@example.com', 'vagrant')\" | python manage.py shell"
-
     - name: Copy Dockerfile
       copy: 
-        src: "{{ lab_path }}/source/Dockerfile"
+        src: "{{ inventories }}/files/Dockerfile"
         dest: "{{ app_path }}"
         remote_src: no
 
     - name: Stop instance
-      shell: "sudo docker rm -f django_app"
+      shell: "sudo docker rm -f {{ docker_container_name }}"
       ignore_errors: yes
 
 
@@ -66,18 +81,9 @@
       docker_image:
         build:
           path: "{{ app_path }}"
-        name: django_app
+        name: "{{ docker_image_name }}"
         state: present
         source: build
 
-
-#    - name: Start docker container
-#      docker_container: 
-#        name: devops-1
-#        image: devops-1:latest
-#        exposed_ports: 
-#          - "127.0.0.1:80:80/tcp"
-#        state: started
-
     - name: Start docker container
-      shell: "sudo docker run -d -p 8080:80 --name django_app django_app:latest"
+      shell: "sudo docker run -d -p {{ docker_container_working_port }}:80 --name {{ docker_container_name }} {{ docker_image_name }}:latest"

@@ -1,7 +1,6 @@
-- src: https://gitlab.com/ansilbe-roles1/docker
+- src: git+ssh://git@gitlab.com/b4ka.ansible-roles/docker.git
+  version: origin/master
   name: docker
+- src: git+ssh://git@gitlab.com/b4ka.ansible-roles/nginx.git
   version: master
-
-- src: https://gitlab.com/ansilbe-roles1/nginx
   name: nginx
-  version: master
