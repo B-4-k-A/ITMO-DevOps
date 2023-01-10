@@ -45,13 +45,6 @@
 - hosts: app
   become: yes
   become_method: sudo
-  vars:
-    project_path: "/home/beka/Study/DevOps"
-    inventories: "{{ project_path }}/inventories"
-    app_path: "/home/vagrant/DevOps/lab-1"
-    docker_image_name: "django_app"
-    docker_container_name: "django_app"
-    docker_container_working_port: "8080"
   tasks:
     - name: Delete app directory
       file:

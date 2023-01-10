@@ -4,9 +4,6 @@
   become: yes
   roles:
     - nginx
-  vars:
-    project_path: "/home/beka/Study/DevOps"
-    inventories: "{{ project_path }}/inventories"
   tasks:
     - name: Create directory for static files for nginx server if it does not exists
       file:
@@ -24,13 +21,6 @@
   roles:
     - docker
 
-  vars:
-    project_path: "/home/beka/Study/DevOps"
-    inventories: "{{ project_path }}/inventories"
-    app_path: "/home/vagrant/DevOps/lab-1"
-    docker_image_name: "django_app"
-    docker_container_name: "django_app"
-    docker_container_working_port: "8080"
   tasks:
     - name: Delete app directory
       file:

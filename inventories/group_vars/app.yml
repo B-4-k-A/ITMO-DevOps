@@ -1,0 +1,5 @@
+---
+app_path: "/home/vagrant/DevOps/lab-1"
+docker_image_name: "django_app"
+docker_container_name: "django_app"
+docker_container_working_port: "808"

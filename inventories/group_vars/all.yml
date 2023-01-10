@@ -1,0 +1,3 @@
+---
+project_path: "/home/beka/Study/DevOps"
+inventories: "{{ project_path }}/inventories"

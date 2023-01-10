@@ -1,6 +1,11 @@
 - src: git+ssh://git@gitlab.com/b4ka.ansible-roles/docker.git
   version: origin/master
   name: docker
+
 - src: git+ssh://git@gitlab.com/b4ka.ansible-roles/nginx.git
   version: master
   name: nginx
+
+- src: git+ssh://git@gitlab.com/b4ka.ansible-roles/ansible-role-openvpn.git
+  version: master
+  name: openvpn
