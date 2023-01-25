@@ -9,3 +9,7 @@
 - src: git+ssh://git@gitlab.com/b4ka.ansible-roles/ansible-role-openvpn.git
   version: master
   name: openvpn
+
+- src: git+ssh://git@gitlab.com/b4ka.ansible-roles/ansible-role-postgresql.git
+  version: master
+  name: postgresql

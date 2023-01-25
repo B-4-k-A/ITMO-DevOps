@@ -1,0 +1,19 @@
+---
+- name: configure postgres master node
+  become: true
+  become_user: root
+  gather_facts: no
+  hosts: app
+  roles:
+    - role: postgresql
+      vars:
+        postgresql_role: master
+
+- name: configure postgres replica node
+  become: true
+  become_user: root
+  hosts: web
+  roles:
+    - role: postgresql
+      vars:
+        postgresql_role: replica
